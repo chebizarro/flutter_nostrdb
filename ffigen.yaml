@@ -1,0 +1,28 @@
+# Run with `dart run ffigen --config ffigen.yaml`.
+name: FlutterNostrdbBindings
+description: |
+  Bindings for `src/nostrdb/src/nostrdb.h`.
+
+  Regenerate bindings with `dart run ffigen --config ffigen.yaml`.
+output: 'lib/flutter_nostrdb_bindings_generated.dart'
+headers:
+  entry-points:
+    - 'src/nostrdb/src/nostrdb.h'
+  include-directives:
+    - 'src/nostrdb/src/nostrdb.h'
+compiler-opts:
+  - '-Isrc/nostrdb/ccan'
+  - '-Isrc/nostrdb/src'
+preamble: |
+  // ignore_for_file: always_specify_types
+  // ignore_for_file: camel_case_types
+  // ignore_for_file: non_constant_identifier_names
+comments:
+  style: any
+  length: full
+structs:
+  # If the struct is named "ndb" (exact match),
+  # rename it to "Ndb".
+  rename:
+    "^ndb$": "Ndb"
+    "^ndb_stat$": "NdbStat"

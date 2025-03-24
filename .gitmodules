@@ -1,0 +1,3 @@
+[submodule "src/nostrdb"]
+	path = src/nostrdb
+	url = https://github.com/damus-io/nostrdb.git
