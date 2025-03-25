@@ -27,56 +27,56 @@ class FlutterNostrdbBindings {
   ) : _lookup = lookup;
 
   /// CONFIG
-  void ndb_default_config(ffi.Pointer<ndb_config> arg0) {
+  void ndb_default_config(ffi.Pointer<NdbConfig> arg0) {
     return _ndb_default_config(arg0);
   }
 
   late final _ndb_default_configPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_config>)>>(
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbConfig>)>>(
         'ndb_default_config',
       );
   late final _ndb_default_config =
       _ndb_default_configPtr
-          .asFunction<void Function(ffi.Pointer<ndb_config>)>();
+          .asFunction<void Function(ffi.Pointer<NdbConfig>)>();
 
   void ndb_config_set_ingest_threads(
-    ffi.Pointer<ndb_config> config,
+    ffi.Pointer<NdbConfig> config,
     int threads,
   ) {
     return _ndb_config_set_ingest_threads(config, threads);
   }
 
   late final _ndb_config_set_ingest_threadsPtr = _lookup<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_config>, ffi.Int)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbConfig>, ffi.Int)>
   >('ndb_config_set_ingest_threads');
   late final _ndb_config_set_ingest_threads =
       _ndb_config_set_ingest_threadsPtr
-          .asFunction<void Function(ffi.Pointer<ndb_config>, int)>();
+          .asFunction<void Function(ffi.Pointer<NdbConfig>, int)>();
 
-  void ndb_config_set_flags(ffi.Pointer<ndb_config> config, int flags) {
+  void ndb_config_set_flags(ffi.Pointer<NdbConfig> config, int flags) {
     return _ndb_config_set_flags(config, flags);
   }
 
   late final _ndb_config_set_flagsPtr = _lookup<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_config>, ffi.Int)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbConfig>, ffi.Int)>
   >('ndb_config_set_flags');
   late final _ndb_config_set_flags =
       _ndb_config_set_flagsPtr
-          .asFunction<void Function(ffi.Pointer<ndb_config>, int)>();
+          .asFunction<void Function(ffi.Pointer<NdbConfig>, int)>();
 
-  void ndb_config_set_mapsize(ffi.Pointer<ndb_config> config, int mapsize) {
+  void ndb_config_set_mapsize(ffi.Pointer<NdbConfig> config, int mapsize) {
     return _ndb_config_set_mapsize(config, mapsize);
   }
 
   late final _ndb_config_set_mapsizePtr = _lookup<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_config>, ffi.Size)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbConfig>, ffi.Size)>
   >('ndb_config_set_mapsize');
   late final _ndb_config_set_mapsize =
       _ndb_config_set_mapsizePtr
-          .asFunction<void Function(ffi.Pointer<ndb_config>, int)>();
+          .asFunction<void Function(ffi.Pointer<NdbConfig>, int)>();
 
   void ndb_config_set_ingest_filter(
-    ffi.Pointer<ndb_config> config,
+    ffi.Pointer<NdbConfig> config,
     ndb_ingest_filter_fn fn,
     ffi.Pointer<ffi.Void> arg2,
   ) {
@@ -86,7 +86,7 @@ class FlutterNostrdbBindings {
   late final _ndb_config_set_ingest_filterPtr = _lookup<
     ffi.NativeFunction<
       ffi.Void Function(
-        ffi.Pointer<ndb_config>,
+        ffi.Pointer<NdbConfig>,
         ndb_ingest_filter_fn,
         ffi.Pointer<ffi.Void>,
       )
@@ -96,14 +96,14 @@ class FlutterNostrdbBindings {
       _ndb_config_set_ingest_filterPtr
           .asFunction<
             void Function(
-              ffi.Pointer<ndb_config>,
+              ffi.Pointer<NdbConfig>,
               ndb_ingest_filter_fn,
               ffi.Pointer<ffi.Void>,
             )
           >();
 
   void ndb_config_set_subscription_callback(
-    ffi.Pointer<ndb_config> config,
+    ffi.Pointer<NdbConfig> config,
     ndb_sub_fn fn,
     ffi.Pointer<ffi.Void> ctx,
   ) {
@@ -113,7 +113,7 @@ class FlutterNostrdbBindings {
   late final _ndb_config_set_subscription_callbackPtr = _lookup<
     ffi.NativeFunction<
       ffi.Void Function(
-        ffi.Pointer<ndb_config>,
+        ffi.Pointer<NdbConfig>,
         ndb_sub_fn,
         ffi.Pointer<ffi.Void>,
       )
@@ -123,7 +123,7 @@ class FlutterNostrdbBindings {
       _ndb_config_set_subscription_callbackPtr
           .asFunction<
             void Function(
-              ffi.Pointer<ndb_config>,
+              ffi.Pointer<NdbConfig>,
               ndb_sub_fn,
               ffi.Pointer<ffi.Void>,
             )
@@ -133,22 +133,22 @@ class FlutterNostrdbBindings {
   /// you can decrease this to reduce memory usage. If you have bigger notes you should increase this so
   /// that the writer thread can properly parse larger notes.
   void ndb_config_set_writer_scratch_buffer_size(
-    ffi.Pointer<ndb_config> config,
+    ffi.Pointer<NdbConfig> config,
     int scratch_size,
   ) {
     return _ndb_config_set_writer_scratch_buffer_size(config, scratch_size);
   }
 
   late final _ndb_config_set_writer_scratch_buffer_sizePtr = _lookup<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_config>, ffi.Int)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbConfig>, ffi.Int)>
   >('ndb_config_set_writer_scratch_buffer_size');
   late final _ndb_config_set_writer_scratch_buffer_size =
       _ndb_config_set_writer_scratch_buffer_sizePtr
-          .asFunction<void Function(ffi.Pointer<ndb_config>, int)>();
+          .asFunction<void Function(ffi.Pointer<NdbConfig>, int)>();
 
   /// HELPERS
   int ndb_calculate_id(
-    ffi.Pointer<ndb_note> note,
+    ffi.Pointer<NdbNote> note,
     ffi.Pointer<ffi.UnsignedChar> buf,
     int buflen,
   ) {
@@ -158,7 +158,7 @@ class FlutterNostrdbBindings {
   late final _ndb_calculate_idPtr = _lookup<
     ffi.NativeFunction<
       ffi.Int Function(
-        ffi.Pointer<ndb_note>,
+        ffi.Pointer<NdbNote>,
         ffi.Pointer<ffi.UnsignedChar>,
         ffi.Int,
       )
@@ -168,7 +168,7 @@ class FlutterNostrdbBindings {
       _ndb_calculate_idPtr
           .asFunction<
             int Function(
-              ffi.Pointer<ndb_note>,
+              ffi.Pointer<NdbNote>,
               ffi.Pointer<ffi.UnsignedChar>,
               int,
             )
@@ -265,7 +265,7 @@ class FlutterNostrdbBindings {
   int ndb_init(
     ffi.Pointer<ffi.Pointer<Ndb>> ndb,
     ffi.Pointer<ffi.Char> dbdir,
-    ffi.Pointer<ndb_config> arg2,
+    ffi.Pointer<NdbConfig> arg2,
   ) {
     return _ndb_init(ndb, dbdir, arg2);
   }
@@ -275,7 +275,7 @@ class FlutterNostrdbBindings {
       ffi.Int Function(
         ffi.Pointer<ffi.Pointer<Ndb>>,
         ffi.Pointer<ffi.Char>,
-        ffi.Pointer<ndb_config>,
+        ffi.Pointer<NdbConfig>,
       )
     >
   >('ndb_init');
@@ -285,7 +285,7 @@ class FlutterNostrdbBindings {
             int Function(
               ffi.Pointer<ffi.Pointer<Ndb>>,
               ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ndb_config>,
+              ffi.Pointer<NdbConfig>,
             )
           >();
 
@@ -686,7 +686,7 @@ class FlutterNostrdbBindings {
             int Function(ffi.Pointer<ndb_txn>, ffi.Pointer<ffi.UnsignedChar>)
           >();
 
-  ffi.Pointer<ndb_note> ndb_get_note_by_id(
+  ffi.Pointer<NdbNote> ndb_get_note_by_id(
     ffi.Pointer<ndb_txn> txn,
     ffi.Pointer<ffi.UnsignedChar> id,
     ffi.Pointer<ffi.Size> len,
@@ -697,7 +697,7 @@ class FlutterNostrdbBindings {
 
   late final _ndb_get_note_by_idPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Pointer<ndb_note> Function(
+      ffi.Pointer<NdbNote> Function(
         ffi.Pointer<ndb_txn>,
         ffi.Pointer<ffi.UnsignedChar>,
         ffi.Pointer<ffi.Size>,
@@ -708,7 +708,7 @@ class FlutterNostrdbBindings {
   late final _ndb_get_note_by_id =
       _ndb_get_note_by_idPtr
           .asFunction<
-            ffi.Pointer<ndb_note> Function(
+            ffi.Pointer<NdbNote> Function(
               ffi.Pointer<ndb_txn>,
               ffi.Pointer<ffi.UnsignedChar>,
               ffi.Pointer<ffi.Size>,
@@ -716,7 +716,7 @@ class FlutterNostrdbBindings {
             )
           >();
 
-  ffi.Pointer<ndb_note> ndb_get_note_by_key(
+  ffi.Pointer<NdbNote> ndb_get_note_by_key(
     ffi.Pointer<ndb_txn> txn,
     int key,
     ffi.Pointer<ffi.Size> len,
@@ -726,7 +726,7 @@ class FlutterNostrdbBindings {
 
   late final _ndb_get_note_by_keyPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Pointer<ndb_note> Function(
+      ffi.Pointer<NdbNote> Function(
         ffi.Pointer<ndb_txn>,
         ffi.Uint64,
         ffi.Pointer<ffi.Size>,
@@ -736,7 +736,7 @@ class FlutterNostrdbBindings {
   late final _ndb_get_note_by_key =
       _ndb_get_note_by_keyPtr
           .asFunction<
-            ffi.Pointer<ndb_note> Function(
+            ffi.Pointer<NdbNote> Function(
               ffi.Pointer<ndb_txn>,
               int,
               ffi.Pointer<ffi.Size>,
@@ -803,7 +803,7 @@ class FlutterNostrdbBindings {
   /// BUILDER
   int ndb_parse_json_note(
     ffi.Pointer<ndb_json_parser> arg0,
-    ffi.Pointer<ffi.Pointer<ndb_note>> arg1,
+    ffi.Pointer<ffi.Pointer<NdbNote>> arg1,
   ) {
     return _ndb_parse_json_note(arg0, arg1);
   }
@@ -812,7 +812,7 @@ class FlutterNostrdbBindings {
     ffi.NativeFunction<
       ffi.Int Function(
         ffi.Pointer<ndb_json_parser>,
-        ffi.Pointer<ffi.Pointer<ndb_note>>,
+        ffi.Pointer<ffi.Pointer<NdbNote>>,
       )
     >
   >('ndb_parse_json_note');
@@ -821,7 +821,7 @@ class FlutterNostrdbBindings {
           .asFunction<
             int Function(
               ffi.Pointer<ndb_json_parser>,
-              ffi.Pointer<ffi.Pointer<ndb_note>>,
+              ffi.Pointer<ffi.Pointer<NdbNote>>,
             )
           >();
 
@@ -900,7 +900,7 @@ class FlutterNostrdbBindings {
   int ndb_note_from_json(
     ffi.Pointer<ffi.Char> json,
     int len,
-    ffi.Pointer<ffi.Pointer<ndb_note>> arg2,
+    ffi.Pointer<ffi.Pointer<NdbNote>> arg2,
     ffi.Pointer<ffi.UnsignedChar> buf,
     int buflen,
   ) {
@@ -912,7 +912,7 @@ class FlutterNostrdbBindings {
       ffi.Int Function(
         ffi.Pointer<ffi.Char>,
         ffi.Int,
-        ffi.Pointer<ffi.Pointer<ndb_note>>,
+        ffi.Pointer<ffi.Pointer<NdbNote>>,
         ffi.Pointer<ffi.UnsignedChar>,
         ffi.Int,
       )
@@ -924,7 +924,7 @@ class FlutterNostrdbBindings {
             int Function(
               ffi.Pointer<ffi.Char>,
               int,
-              ffi.Pointer<ffi.Pointer<ndb_note>>,
+              ffi.Pointer<ffi.Pointer<NdbNote>>,
               ffi.Pointer<ffi.UnsignedChar>,
               int,
             )
@@ -959,7 +959,7 @@ class FlutterNostrdbBindings {
 
   int ndb_builder_finalize(
     ffi.Pointer<ndb_builder> builder,
-    ffi.Pointer<ffi.Pointer<ndb_note>> note,
+    ffi.Pointer<ffi.Pointer<NdbNote>> note,
     ffi.Pointer<ndb_keypair> privkey,
   ) {
     return _ndb_builder_finalize(builder, note, privkey);
@@ -969,7 +969,7 @@ class FlutterNostrdbBindings {
     ffi.NativeFunction<
       ffi.Int Function(
         ffi.Pointer<ndb_builder>,
-        ffi.Pointer<ffi.Pointer<ndb_note>>,
+        ffi.Pointer<ffi.Pointer<NdbNote>>,
         ffi.Pointer<ndb_keypair>,
       )
     >
@@ -979,7 +979,7 @@ class FlutterNostrdbBindings {
           .asFunction<
             int Function(
               ffi.Pointer<ndb_builder>,
-              ffi.Pointer<ffi.Pointer<ndb_note>>,
+              ffi.Pointer<ffi.Pointer<NdbNote>>,
               ffi.Pointer<ndb_keypair>,
             )
           >();
@@ -1431,20 +1431,20 @@ class FlutterNostrdbBindings {
 
   int ndb_filter_matches(
     ffi.Pointer<ndb_filter> arg0,
-    ffi.Pointer<ndb_note> arg1,
+    ffi.Pointer<NdbNote> arg1,
   ) {
     return _ndb_filter_matches(arg0, arg1);
   }
 
   late final _ndb_filter_matchesPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Int Function(ffi.Pointer<ndb_filter>, ffi.Pointer<ndb_note>)
+      ffi.Int Function(ffi.Pointer<ndb_filter>, ffi.Pointer<NdbNote>)
     >
   >('ndb_filter_matches');
   late final _ndb_filter_matches =
       _ndb_filter_matchesPtr
           .asFunction<
-            int Function(ffi.Pointer<ndb_filter>, ffi.Pointer<ndb_note>)
+            int Function(ffi.Pointer<ndb_filter>, ffi.Pointer<NdbNote>)
           >();
 
   int ndb_filter_clone(
@@ -1791,19 +1791,19 @@ class FlutterNostrdbBindings {
           .asFunction<void Function(ffi.Pointer<ndb_stat_counts>)>();
 
   /// NOTE
-  ffi.Pointer<ffi.Char> ndb_note_content(ffi.Pointer<ndb_note> note) {
+  ffi.Pointer<ffi.Char> ndb_note_content(ffi.Pointer<NdbNote> note) {
     return _ndb_note_content(note);
   }
 
   late final _ndb_note_contentPtr = _lookup<
-    ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ndb_note>)>
+    ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<NdbNote>)>
   >('ndb_note_content');
   late final _ndb_note_content =
       _ndb_note_contentPtr
-          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ndb_note>)>();
+          .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<NdbNote>)>();
 
   ndb_str ndb_note_str(
-    ffi.Pointer<ndb_note> note,
+    ffi.Pointer<NdbNote> note,
     ffi.Pointer<ndb_packed_str> pstr,
   ) {
     return _ndb_note_str(note, pstr);
@@ -1811,115 +1811,115 @@ class FlutterNostrdbBindings {
 
   late final _ndb_note_strPtr = _lookup<
     ffi.NativeFunction<
-      ndb_str Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_packed_str>)
+      ndb_str Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_packed_str>)
     >
   >('ndb_note_str');
   late final _ndb_note_str =
       _ndb_note_strPtr
           .asFunction<
-            ndb_str Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_packed_str>)
+            ndb_str Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_packed_str>)
           >();
 
-  int ndb_note_content_length(ffi.Pointer<ndb_note> note) {
+  int ndb_note_content_length(ffi.Pointer<NdbNote> note) {
     return _ndb_note_content_length(note);
   }
 
   late final _ndb_note_content_lengthPtr =
-      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<ndb_note>)>>(
+      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<NdbNote>)>>(
         'ndb_note_content_length',
       );
   late final _ndb_note_content_length =
       _ndb_note_content_lengthPtr
-          .asFunction<int Function(ffi.Pointer<ndb_note>)>();
+          .asFunction<int Function(ffi.Pointer<NdbNote>)>();
 
-  int ndb_note_created_at(ffi.Pointer<ndb_note> note) {
+  int ndb_note_created_at(ffi.Pointer<NdbNote> note) {
     return _ndb_note_created_at(note);
   }
 
   late final _ndb_note_created_atPtr =
-      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<ndb_note>)>>(
+      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<NdbNote>)>>(
         'ndb_note_created_at',
       );
   late final _ndb_note_created_at =
-      _ndb_note_created_atPtr.asFunction<int Function(ffi.Pointer<ndb_note>)>();
+      _ndb_note_created_atPtr.asFunction<int Function(ffi.Pointer<NdbNote>)>();
 
-  int ndb_note_kind(ffi.Pointer<ndb_note> note) {
+  int ndb_note_kind(ffi.Pointer<NdbNote> note) {
     return _ndb_note_kind(note);
   }
 
   late final _ndb_note_kindPtr =
-      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<ndb_note>)>>(
+      _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<NdbNote>)>>(
         'ndb_note_kind',
       );
   late final _ndb_note_kind =
-      _ndb_note_kindPtr.asFunction<int Function(ffi.Pointer<ndb_note>)>();
+      _ndb_note_kindPtr.asFunction<int Function(ffi.Pointer<NdbNote>)>();
 
-  ffi.Pointer<ffi.UnsignedChar> ndb_note_id(ffi.Pointer<ndb_note> note) {
+  ffi.Pointer<ffi.UnsignedChar> ndb_note_id(ffi.Pointer<NdbNote> note) {
     return _ndb_note_id(note);
   }
 
   late final _ndb_note_idPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
     >
   >('ndb_note_id');
   late final _ndb_note_id =
       _ndb_note_idPtr
           .asFunction<
-            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
           >();
 
-  ffi.Pointer<ffi.UnsignedChar> ndb_note_pubkey(ffi.Pointer<ndb_note> note) {
+  ffi.Pointer<ffi.UnsignedChar> ndb_note_pubkey(ffi.Pointer<NdbNote> note) {
     return _ndb_note_pubkey(note);
   }
 
   late final _ndb_note_pubkeyPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
     >
   >('ndb_note_pubkey');
   late final _ndb_note_pubkey =
       _ndb_note_pubkeyPtr
           .asFunction<
-            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
           >();
 
-  ffi.Pointer<ffi.UnsignedChar> ndb_note_sig(ffi.Pointer<ndb_note> note) {
+  ffi.Pointer<ffi.UnsignedChar> ndb_note_sig(ffi.Pointer<NdbNote> note) {
     return _ndb_note_sig(note);
   }
 
   late final _ndb_note_sigPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+      ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
     >
   >('ndb_note_sig');
   late final _ndb_note_sig =
       _ndb_note_sigPtr
           .asFunction<
-            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<ndb_note>)
+            ffi.Pointer<ffi.UnsignedChar> Function(ffi.Pointer<NdbNote>)
           >();
 
-  void _ndb_note_set_kind(ffi.Pointer<ndb_note> note, int kind) {
+  void _ndb_note_set_kind(ffi.Pointer<NdbNote> note, int kind) {
     return __ndb_note_set_kind(note, kind);
   }
 
   late final __ndb_note_set_kindPtr = _lookup<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ndb_note>, ffi.Uint32)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<NdbNote>, ffi.Uint32)>
   >('_ndb_note_set_kind');
   late final __ndb_note_set_kind =
       __ndb_note_set_kindPtr
-          .asFunction<void Function(ffi.Pointer<ndb_note>, int)>();
+          .asFunction<void Function(ffi.Pointer<NdbNote>, int)>();
 
-  ffi.Pointer<ndb_tags> ndb_note_tags(ffi.Pointer<ndb_note> note) {
+  ffi.Pointer<ndb_tags> ndb_note_tags(ffi.Pointer<NdbNote> note) {
     return _ndb_note_tags(note);
   }
 
   late final _ndb_note_tagsPtr = _lookup<
-    ffi.NativeFunction<ffi.Pointer<ndb_tags> Function(ffi.Pointer<ndb_note>)>
+    ffi.NativeFunction<ffi.Pointer<ndb_tags> Function(ffi.Pointer<NdbNote>)>
   >('ndb_note_tags');
   late final _ndb_note_tags =
       _ndb_note_tagsPtr
-          .asFunction<ffi.Pointer<ndb_tags> Function(ffi.Pointer<ndb_note>)>();
+          .asFunction<ffi.Pointer<ndb_tags> Function(ffi.Pointer<NdbNote>)>();
 
   int ndb_str_len(ffi.Pointer<ndb_str> str) {
     return _ndb_str_len(str);
@@ -1934,7 +1934,7 @@ class FlutterNostrdbBindings {
 
   /// write the note as json to a buffer
   int ndb_note_json(
-    ffi.Pointer<ndb_note> arg0,
+    ffi.Pointer<NdbNote> arg0,
     ffi.Pointer<ffi.Char> buf,
     int buflen,
   ) {
@@ -1943,18 +1943,18 @@ class FlutterNostrdbBindings {
 
   late final _ndb_note_jsonPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Int Function(ffi.Pointer<ndb_note>, ffi.Pointer<ffi.Char>, ffi.Int)
+      ffi.Int Function(ffi.Pointer<NdbNote>, ffi.Pointer<ffi.Char>, ffi.Int)
     >
   >('ndb_note_json');
   late final _ndb_note_json =
       _ndb_note_jsonPtr
           .asFunction<
-            int Function(ffi.Pointer<ndb_note>, ffi.Pointer<ffi.Char>, int)
+            int Function(ffi.Pointer<NdbNote>, ffi.Pointer<ffi.Char>, int)
           >();
 
   /// TAGS
   void ndb_tags_iterate_start(
-    ffi.Pointer<ndb_note> note,
+    ffi.Pointer<NdbNote> note,
     ffi.Pointer<ndb_iterator> iter,
   ) {
     return _ndb_tags_iterate_start(note, iter);
@@ -1962,13 +1962,13 @@ class FlutterNostrdbBindings {
 
   late final _ndb_tags_iterate_startPtr = _lookup<
     ffi.NativeFunction<
-      ffi.Void Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_iterator>)
+      ffi.Void Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_iterator>)
     >
   >('ndb_tags_iterate_start');
   late final _ndb_tags_iterate_start =
       _ndb_tags_iterate_startPtr
           .asFunction<
-            void Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_iterator>)
+            void Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_iterator>)
           >();
 
   int ndb_tags_count(ffi.Pointer<ndb_tags> arg0) {
@@ -2018,7 +2018,7 @@ class FlutterNostrdbBindings {
           .asFunction<ndb_str Function(ffi.Pointer<ndb_iterator>, int)>();
 
   ndb_str ndb_tag_str(
-    ffi.Pointer<ndb_note> note,
+    ffi.Pointer<NdbNote> note,
     ffi.Pointer<ndb_tag> tag,
     int ind,
   ) {
@@ -2027,13 +2027,13 @@ class FlutterNostrdbBindings {
 
   late final _ndb_tag_strPtr = _lookup<
     ffi.NativeFunction<
-      ndb_str Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_tag>, ffi.Int)
+      ndb_str Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_tag>, ffi.Int)
     >
   >('ndb_tag_str');
   late final _ndb_tag_str =
       _ndb_tag_strPtr
           .asFunction<
-            ndb_str Function(ffi.Pointer<ndb_note>, ffi.Pointer<ndb_tag>, int)
+            ndb_str Function(ffi.Pointer<NdbNote>, ffi.Pointer<ndb_tag>, int)
           >();
 
   /// RELAY ITER
@@ -2525,7 +2525,7 @@ final class bech32_nrelay extends ffi.Struct {
   external ndb_str_block relay;
 }
 
-final class ndb_note extends ffi.Opaque {}
+final class NdbNote extends ffi.Opaque {}
 
 final class ndb_tag extends ffi.Opaque {}
 
@@ -2555,7 +2555,7 @@ final class ndb_blocks_ptr extends ffi.Struct {
 }
 
 final class ndb_note_ptr extends ffi.Struct {
-  external ffi.Pointer<ndb_note> ptr;
+  external ffi.Pointer<NdbNote> ptr;
 }
 
 final class ndb_t extends ffi.Struct {
@@ -2633,7 +2633,7 @@ final class ndb_txn extends ffi.Struct {
 }
 
 final class ndb_event extends ffi.Struct {
-  external ffi.Pointer<ndb_note> note;
+  external ffi.Pointer<NdbNote> note;
 }
 
 final class ndb_command_result extends ffi.Struct {
@@ -2927,7 +2927,7 @@ final class ndb_builder extends ffi.Struct {
 
   external cursor str_indices;
 
-  external ffi.Pointer<ndb_note> note;
+  external ffi.Pointer<NdbNote> note;
 
   external ffi.Pointer<ndb_tag> current_tag;
 }
@@ -2953,7 +2953,7 @@ final class ndb_note_relay_iterator extends ffi.Struct {
 }
 
 final class ndb_iterator extends ffi.Struct {
-  external ffi.Pointer<ndb_note> note;
+  external ffi.Pointer<NdbNote> note;
 
   external ffi.Pointer<ndb_tag> tag;
 
@@ -3014,7 +3014,7 @@ final class ndb_filter extends ffi.Struct {
   external ffi.Array<ffi.Int> elements;
 }
 
-final class ndb_config extends ffi.Struct {
+final class NdbConfig extends ffi.Struct {
   @ffi.Int()
   external int flags;
 
@@ -3039,11 +3039,11 @@ final class ndb_config extends ffi.Struct {
 typedef ndb_ingest_filter_fn =
     ffi.Pointer<ffi.NativeFunction<ndb_ingest_filter_fnFunction>>;
 typedef ndb_ingest_filter_fnFunction =
-    ffi.UnsignedInt Function(ffi.Pointer<ffi.Void>, ffi.Pointer<ndb_note>);
+    ffi.UnsignedInt Function(ffi.Pointer<ffi.Void>, ffi.Pointer<NdbNote>);
 typedef Dartndb_ingest_filter_fnFunction =
     ndb_ingest_filter_action Function(
       ffi.Pointer<ffi.Void>,
-      ffi.Pointer<ndb_note>,
+      ffi.Pointer<NdbNote>,
     );
 
 /// callback function for when we receive new subscription results
@@ -3106,7 +3106,7 @@ final class ndb_text_search_result extends ffi.Struct {
   external int prefix_chars;
 
   /// This is only set if we passed a filter for nip50 searches
-  external ffi.Pointer<ndb_note> note;
+  external ffi.Pointer<NdbNote> note;
 
   @ffi.Uint64()
   external int note_size;
@@ -3131,7 +3131,7 @@ final class ndb_block_iterator extends ffi.Struct {
 }
 
 final class ndb_query_result extends ffi.Struct {
-  external ffi.Pointer<ndb_note> note;
+  external ffi.Pointer<NdbNote> note;
 
   @ffi.Uint64()
   external int note_size;

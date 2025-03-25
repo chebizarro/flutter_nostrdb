@@ -5,9 +5,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(flutter_nostrdb_library VERSION 0.0.1 LANGUAGES C)
 
-# ---------------------------------------------------------------------------
-# Compiler flags from your Makefile
-# ---------------------------------------------------------------------------
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-misleading-indentation -Wno-unused-function \
     -Werror -O2 -g -fPIC -DCCAN_TAL_NEVER_RETURN_NULL=1")
 
@@ -17,7 +14,7 @@ if(APPLE)
 endif()
 
 # ---------------------------------------------------------------------------
-# Include directories (from your Makefile's CFLAGS)
+# Include directories
 # ---------------------------------------------------------------------------
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/nostrdb/src
@@ -29,7 +26,7 @@ include_directories(
 )
 
 # ---------------------------------------------------------------------------
-# Source lists, following your Makefile
+# Source lists
 # ---------------------------------------------------------------------------
 # 1) Primary nostrdb sources
 set(NOSTRDB_SRC
@@ -68,15 +65,10 @@ set(CCAN_SRC
   nostrdb/ccan/ccan/take/take.c
 )
 
-# 5) LMDB sources (since we presumably do NOT have a separate CMake for LMDB)
+# 5) LMDB sources
 set(LMDB_SRC
   nostrdb/deps/lmdb/mdb.c
   nostrdb/deps/lmdb/midl.c
-)
-
-# 6) The Flutter wrapper
-set(FLUTTER_WRAPPER
-  flutter_nostrdb.c
 )
 
 # Combine all, but exclude secp256k1 from here,
@@ -87,7 +79,6 @@ set(ALL_SOURCES
   ${FLATCC_SRC}
   ${CCAN_SRC}
   ${LMDB_SRC}
-  ${FLUTTER_WRAPPER}
 )
 
 # ---------------------------------------------------------------------------
@@ -122,8 +113,7 @@ set_target_properties(flutter_nostrdb PROPERTIES
 
 target_compile_definitions(flutter_nostrdb PUBLIC DART_SHARED_LIB)
 
-# Link the newly built secp256k1 library target (whatever name they used)
-# It's probably called 'secp256k1' or 'libsecp256k1'.
+# Link the newly built secp256k1 library target
 target_link_libraries(flutter_nostrdb
   PRIVATE
   secp256k1

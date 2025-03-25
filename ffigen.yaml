@@ -26,3 +26,5 @@ structs:
   rename:
     "^ndb$": "Ndb"
     "^ndb_stat$": "NdbStat"
+    "^ndb_config$": "NdbConfig"
+    "^ndb_note$": "NdbNote"
