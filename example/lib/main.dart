@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_nostrdb/flutter_nostrdb.dart';
 import 'package:path_provider/path_provider.dart';
 
+// Entry point
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initDatabaseFile();
@@ -13,15 +14,11 @@ void main() async {
   runApp(NostrDbEditorApp(dir: dir.path));
 }
 
+// Copy data.mdb from assets to local directory
 Future<void> _initDatabaseFile() async {
-  // 1. Load the asset
   final bytes = await rootBundle.load('assets/data.mdb');
-
-  // 2. Determine a writable location. For example, app's documents dir.
   final dir = await getApplicationDocumentsDirectory();
   final dbPath = '${dir.path}/data.mdb';
-
-  // 3. Write the bytes to a file on the device
   final file = File(dbPath);
   if (!file.existsSync()) {
     await file.writeAsBytes(bytes.buffer.asUint8List());
@@ -50,22 +47,31 @@ class NostrDbHomePage extends StatefulWidget {
   const NostrDbHomePage({super.key, required this.dir});
 
   @override
-  State<NostrDbHomePage> createState() => _NostrDbHomePageState(dir);
+  State<NostrDbHomePage> createState() => _NostrDbHomePageState();
 }
 
 class _NostrDbHomePageState extends State<NostrDbHomePage> {
-  String _dbPath;
+  late String _dbPath;
   int _openResult = -1;
   bool _isDbOpen = false;
 
   // For showing stats
   String _statsText = '';
 
-  // For queries (super simplified)
-  final _queryController = TextEditingController();
-  String _queryResults = 'No query run yet.';
+  // Filter inputs:
+  final TextEditingController _kindsController = TextEditingController();
+  final TextEditingController _authorsController = TextEditingController();
+  final TextEditingController _sinceController = TextEditingController();
+  final TextEditingController _untilController = TextEditingController();
+  final TextEditingController _limitController = TextEditingController();
+  String _filterResults = 'No query run yet.';
+  List<Map<String, dynamic>> _queryResults = [];
 
-  _NostrDbHomePageState(this._dbPath);
+  @override
+  void initState() {
+    super.initState();
+    _dbPath = widget.dir; // default to user's documents directory
+  }
 
   @override
   void dispose() {
@@ -75,9 +81,8 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
     super.dispose();
   }
 
+  /// Let user type in new DB path
   Future<void> _pickDbPath() async {
-    // In a real app, you might use a file picker or similar approach.
-    // For demonstration, let's do something like:
     final text = await showDialog<String>(
       context: context,
       builder: (ctx) {
@@ -104,8 +109,8 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
     });
   }
 
+  /// Open DB
   void _openDb() {
-    // For demonstration, pass default flags or config
     final result = NostrDb.openDb(
       _dbPath,
       flags: 0,
@@ -120,6 +125,7 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
     });
   }
 
+  /// Close DB
   void _closeDb() {
     if (!_isDbOpen) return;
     NostrDb.instance?.closeDb();
@@ -127,9 +133,11 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
       _isDbOpen = false;
       _statsText = '';
       _openResult = -1;
+      _queryResults.clear();
     });
   }
 
+  /// Get stats
   void _fetchStats() {
     final api = NostrDb.instance;
     if (api == null) return;
@@ -140,13 +148,10 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
       });
       return;
     }
-
-    // st.dbs is an Array<ndb_stat_counts>, length=16
     final buffer = StringBuffer();
     buffer.writeln('DBS (16 total):');
     for (int i = 0; i < 16; i++) {
       final counts = st.dbs[i];
-      // or use extension for [] if you have it
       buffer.writeln(
         'Index $i => count=${counts.count}, key_size=${counts.key_size}, val_size=${counts.value_size}',
       );
@@ -166,39 +171,82 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
         '\nOther => count=${other.count}, key_size=${other.key_size}, val_size=${other.value_size}',
       );
     }
-
     setState(() {
       _statsText = buffer.toString();
     });
   }
 
-  // Very simplified approach: we won't implement real ndb_query bridging
-  // but let's pretend we do a note search or something
-  void _runQuery() {
-    final queryText = _queryController.text.trim();
+  /// Build a filter from the UI text fields
+  Map<String, dynamic> _buildFilterDict() {
+    final Map<String, dynamic> filter = {};
+
+    // kinds -> parse comma-separated numbers
+    if (_kindsController.text.trim().isNotEmpty) {
+      final kindsList = _kindsController.text
+          .split(',')
+          .map((e) => int.tryParse(e.trim()))
+          .whereType<int>()
+          .toList();
+      if (kindsList.isNotEmpty) filter['kinds'] = kindsList;
+    }
+
+    // authors -> parse comma-separated hex strings or pubkeys
+    if (_authorsController.text.trim().isNotEmpty) {
+      final authors = _authorsController.text
+          .split(',')
+          .map((e) => e.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+      if (authors.isNotEmpty) filter['a'] = authors;
+    }
+
+    // since -> parse int
+    if (_sinceController.text.trim().isNotEmpty) {
+      final val = int.tryParse(_sinceController.text.trim());
+      if (val != null) filter['since'] = val;
+    }
+
+    // until -> parse int
+    if (_untilController.text.trim().isNotEmpty) {
+      final val = int.tryParse(_untilController.text.trim());
+      if (val != null) filter['until'] = val;
+    }
+
+    // limit -> parse int
+    if (_limitController.text.trim().isNotEmpty) {
+      final val = int.tryParse(_limitController.text.trim());
+      if (val != null) filter['limit'] = val;
+    }
+
+    return filter;
+  }
+
+  /// Run the filter
+  void _runFilter() {
     final api = NostrDb.instance;
     if (api == null) {
       setState(() {
-        _queryResults = 'DB not open.';
+        _filterResults = 'DB not open.';
       });
       return;
     }
-    final results = NostrDb.instance!.query({
-      'kinds': [1],
-    });
+
+    final filterDict = _buildFilterDict();
+    // Suppose you have a bridging function: NostrDb.instance!.query(filterMap)
+    // that returns a list of results (maps or objects).
+    final results = api.query(filterDict); // a list of maps, e.g. [{'id': '...', 'content': '...'}, ...]
+
     setState(() {
-      _queryResults = results
-          .map((e) => "${e['id']}:${e['content']}")
-          .join('\n');
+      _filterResults = 'Filter: $filterDict';
+      _queryResults = results;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dbStatus =
-        _isDbOpen ? 'DB is open (result=$_openResult)' : 'DB is closed.';
+    final dbStatus = _isDbOpen ? 'DB is open (result=$_openResult)' : 'DB is closed.';
     return Scaffold(
-      appBar: AppBar(title: const Text('NostrDB Editor')),
+      appBar: AppBar(title: const Text('NostrDB Editor with Filter UI')),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(
@@ -210,19 +258,13 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
               Row(
                 children: [
                   Expanded(child: Text('Current DB Path: $_dbPath')),
-                  IconButton(
-                    icon: const Icon(Icons.folder),
-                    onPressed: _pickDbPath,
-                  ),
+                  IconButton(icon: const Icon(Icons.folder), onPressed: _pickDbPath),
                 ],
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  ElevatedButton(
-                    onPressed: _openDb,
-                    child: const Text('Open DB'),
-                  ),
+                  ElevatedButton(onPressed: _openDb, child: const Text('Open DB')),
                   const SizedBox(width: 12),
                   ElevatedButton(
                     onPressed: _isDbOpen ? _closeDb : null,
@@ -247,29 +289,76 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
                   child: Text(_statsText),
                 ),
               const Divider(),
-              const Text('Query / Search:'),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _queryController,
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. --kind 1 or something...',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _isDbOpen ? _runQuery : null,
-                    child: const Text('Run'),
-                  ),
-                ],
+
+              // Filter UI
+              const Text('Filters', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _kindsController,
+                decoration: const InputDecoration(
+                  labelText: 'Kinds (comma-separated)',
+                  hintText: 'e.g. 0, 1, 2',
+                ),
+              ),
+              TextField(
+                controller: _authorsController,
+                decoration: const InputDecoration(
+                  labelText: 'Authors (comma-separated hex/pubkeys)',
+                ),
+              ),
+              TextField(
+                controller: _sinceController,
+                decoration: const InputDecoration(
+                  labelText: 'Since (unix time)',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: _untilController,
+                decoration: const InputDecoration(
+                  labelText: 'Until (unix time)',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: _limitController,
+                decoration: const InputDecoration(
+                  labelText: 'Limit (int)',
+                  hintText: 'e.g. 100',
+                ),
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 8),
-              Text(
-                _queryResults,
-                style: const TextStyle(fontStyle: FontStyle.italic),
+              ElevatedButton(
+                onPressed: _isDbOpen ? _runFilter : null,
+                child: const Text('Run Filter'),
               ),
+
+              const SizedBox(height: 8),
+              Text(_filterResults,
+                  style: const TextStyle(fontStyle: FontStyle.italic)),
+              const SizedBox(height: 8),
+
+              // Show query results:
+              if (_queryResults.isNotEmpty)
+                ...[
+                  const Text('Results:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Container(
+                    constraints: const BoxConstraints(maxHeight: 400),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _queryResults.length,
+                      itemBuilder: (ctx, i) {
+                        final item = _queryResults[i];
+                        // Suppose item has 'id' and 'content'
+                        return ListTile(
+                          title: Text('${item['id']}'),
+                          subtitle: Text('${item['content'] ?? ''}'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
             ],
           ),
         ),

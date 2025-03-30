@@ -1447,6 +1447,33 @@ class FlutterNostrdbBindings {
             int Function(ffi.Pointer<ndb_filter>, ffi.Pointer<NdbNote>)
           >();
 
+  int ndb_filter_matches_with_relay(
+    ffi.Pointer<ndb_filter> arg0,
+    ffi.Pointer<NdbNote> arg1,
+    ffi.Pointer<ndb_note_relay_iterator> iter,
+  ) {
+    return _ndb_filter_matches_with_relay(arg0, arg1, iter);
+  }
+
+  late final _ndb_filter_matches_with_relayPtr = _lookup<
+    ffi.NativeFunction<
+      ffi.Int Function(
+        ffi.Pointer<ndb_filter>,
+        ffi.Pointer<NdbNote>,
+        ffi.Pointer<ndb_note_relay_iterator>,
+      )
+    >
+  >('ndb_filter_matches_with_relay');
+  late final _ndb_filter_matches_with_relay =
+      _ndb_filter_matches_with_relayPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<ndb_filter>,
+              ffi.Pointer<NdbNote>,
+              ffi.Pointer<ndb_note_relay_iterator>,
+            )
+          >();
+
   int ndb_filter_clone(
     ffi.Pointer<ndb_filter> dst,
     ffi.Pointer<ndb_filter> src,
@@ -2757,7 +2784,8 @@ enum ndb_filter_fieldtype {
   NDB_FILTER_SINCE(5),
   NDB_FILTER_UNTIL(6),
   NDB_FILTER_LIMIT(7),
-  NDB_FILTER_SEARCH(8);
+  NDB_FILTER_SEARCH(8),
+  NDB_FILTER_RELAYS(9);
 
   final int value;
   const ndb_filter_fieldtype(this.value);
@@ -2771,6 +2799,7 @@ enum ndb_filter_fieldtype {
     6 => NDB_FILTER_UNTIL,
     7 => NDB_FILTER_LIMIT,
     8 => NDB_FILTER_SEARCH,
+    9 => NDB_FILTER_RELAYS,
     _ => throw ArgumentError("Unknown value for ndb_filter_fieldtype: $value"),
   };
 }
