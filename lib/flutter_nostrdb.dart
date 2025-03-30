@@ -8,7 +8,6 @@ import 'package:convert/convert.dart';
 import 'flutter_nostrdb_bindings_generated.dart';
 
 class NostrDb {
-  /// The pointer to `struct ndb*`.
   final Pointer<Ndb> _ndbPtr;
 
   NostrDb._(this._ndbPtr);
@@ -17,7 +16,7 @@ class NostrDb {
   static NostrDb? get instance => _instance;
 
   /// Creates or re-initializes the DB
-  static int openDb(
+  static bool openDb(
     String dbPath, {
     int flags = 0,
     int threads = 2,
@@ -45,7 +44,7 @@ class NostrDb {
     ffi.calloc.free(pathUtf8);
     ffi.calloc.free(dbPtrPtr);
     ffi.calloc.free(configPtr);
-    return result;
+    return (result == 1);
   }
 
   /// Closes DB
@@ -125,9 +124,11 @@ class NostrDb {
         filterPtr,
         ndb_filter_fieldtype.NDB_FILTER_SEARCH,
       );
-      final search = filter['search'];
-      _bindings.ndb_filter_add_str_element(filterPtr, search);
+      final search = filter['search'] as String;
+      final searchPtr = search.toNativeUtf8();
+      _bindings.ndb_filter_add_str_element(filterPtr, searchPtr.cast());
       _bindings.ndb_filter_end_field(filterPtr);
+      ffi.calloc.free(searchPtr);
     }
 
     if (filter.containsKey('e')) {
@@ -174,7 +175,6 @@ class NostrDb {
     _bindings.ndb_end_query(txn);
 
     if (querySuccess == 1) {
-      // example usage:
       final actualCount = count.value;
       for (int i = 0; i < actualCount; i++) {
         final result = ndbQueryResultPtr[i].note;
@@ -198,6 +198,49 @@ class NostrDb {
     ffi.calloc.free(count);
     ffi.calloc.free(filterPtr);
     return results;
+  }
+
+  bool processEvent(String event) {
+    final eventPtr = event.toNativeUtf8();
+    final result = _bindings.ndb_process_event(
+      _ndbPtr,
+      eventPtr.cast(),
+      event.length,
+    );
+    ffi.calloc.free(eventPtr);
+    return (result == 1);
+  }
+
+  /// gets the raw profile data for a pubkey
+  String? getProfile(String pubkey) {
+    final bytes = hex.decode(pubkey);
+    final pkPtr = ffi.calloc<Uint8>(bytes.length);
+    final profileLen = ffi.calloc<Size>();
+    final txn = ffi.calloc<ndb_txn>();
+    final key = ffi.calloc<Uint64>();
+
+    _bindings.ndb_begin_query(_ndbPtr, txn);
+
+    final ptr = _bindings.ndb_get_profile_by_pubkey(
+      txn,
+      pkPtr.cast(),
+      profileLen,
+      key,
+    );
+
+    _bindings.ndb_end_query(txn);
+
+    final Uint8List byteList = ptr.cast<Uint8>().asTypedList(5000000);
+    final meaningfulBytes = byteList.sublist(0, profileLen.value);
+    final profile = utf8.decode(meaningfulBytes);
+
+    ffi.calloc.free(pkPtr);
+    ffi.calloc.free(profileLen);
+    ffi.calloc.free(txn);
+    ffi.calloc.free(key);
+    ffi.calloc.free(ptr);
+
+    return profile;
   }
 }
 

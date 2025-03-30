@@ -52,7 +52,6 @@ class NostrDbHomePage extends StatefulWidget {
 
 class _NostrDbHomePageState extends State<NostrDbHomePage> {
   late String _dbPath;
-  int _openResult = -1;
   bool _isDbOpen = false;
 
   // For showing stats
@@ -64,6 +63,8 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
   final TextEditingController _sinceController = TextEditingController();
   final TextEditingController _untilController = TextEditingController();
   final TextEditingController _limitController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+
   String _filterResults = 'No query run yet.';
   List<Map<String, dynamic>> _queryResults = [];
 
@@ -119,8 +120,7 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
       mapsizeMB: 1024,
     );
     setState(() {
-      _openResult = result;
-      _isDbOpen = (result == 1);
+      _isDbOpen = result;
       _statsText = '';
     });
   }
@@ -132,7 +132,6 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
     setState(() {
       _isDbOpen = false;
       _statsText = '';
-      _openResult = -1;
       _queryResults.clear();
     });
   }
@@ -182,21 +181,23 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
 
     // kinds -> parse comma-separated numbers
     if (_kindsController.text.trim().isNotEmpty) {
-      final kindsList = _kindsController.text
-          .split(',')
-          .map((e) => int.tryParse(e.trim()))
-          .whereType<int>()
-          .toList();
+      final kindsList =
+          _kindsController.text
+              .split(',')
+              .map((e) => int.tryParse(e.trim()))
+              .whereType<int>()
+              .toList();
       if (kindsList.isNotEmpty) filter['kinds'] = kindsList;
     }
 
     // authors -> parse comma-separated hex strings or pubkeys
     if (_authorsController.text.trim().isNotEmpty) {
-      final authors = _authorsController.text
-          .split(',')
-          .map((e) => e.trim())
-          .where((s) => s.isNotEmpty)
-          .toList();
+      final authors =
+          _authorsController.text
+              .split(',')
+              .map((e) => e.trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
       if (authors.isNotEmpty) filter['a'] = authors;
     }
 
@@ -218,6 +219,12 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
       if (val != null) filter['limit'] = val;
     }
 
+    // search -> string
+    if (_searchController.text.trim().isNotEmpty) {
+      final val = _searchController.text.trim();
+      if (val.isNotEmpty) filter['search'] = val;
+    }
+
     return filter;
   }
 
@@ -234,7 +241,9 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
     final filterDict = _buildFilterDict();
     // Suppose you have a bridging function: NostrDb.instance!.query(filterMap)
     // that returns a list of results (maps or objects).
-    final results = api.query(filterDict); // a list of maps, e.g. [{'id': '...', 'content': '...'}, ...]
+    final results = api.query(
+      filterDict,
+    ); // a list of maps, e.g. [{'id': '...', 'content': '...'}, ...]
 
     setState(() {
       _filterResults = 'Filter: $filterDict';
@@ -244,7 +253,8 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final dbStatus = _isDbOpen ? 'DB is open (result=$_openResult)' : 'DB is closed.';
+    final dbStatus =
+        _isDbOpen ? 'DB is open (result=$_isDbOpen)' : 'DB is closed.';
     return Scaffold(
       appBar: AppBar(title: const Text('NostrDB Editor with Filter UI')),
       body: Padding(
@@ -258,13 +268,19 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
               Row(
                 children: [
                   Expanded(child: Text('Current DB Path: $_dbPath')),
-                  IconButton(icon: const Icon(Icons.folder), onPressed: _pickDbPath),
+                  IconButton(
+                    icon: const Icon(Icons.folder),
+                    onPressed: _pickDbPath,
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  ElevatedButton(onPressed: _openDb, child: const Text('Open DB')),
+                  ElevatedButton(
+                    onPressed: _openDb,
+                    child: const Text('Open DB'),
+                  ),
                   const SizedBox(width: 12),
                   ElevatedButton(
                     onPressed: _isDbOpen ? _closeDb : null,
@@ -291,7 +307,10 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
               const Divider(),
 
               // Filter UI
-              const Text('Filters', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Filters',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _kindsController,
@@ -311,14 +330,14 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
                 decoration: const InputDecoration(
                   labelText: 'Since (unix time)',
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.datetime,
               ),
               TextField(
                 controller: _untilController,
                 decoration: const InputDecoration(
                   labelText: 'Until (unix time)',
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.datetime,
               ),
               TextField(
                 controller: _limitController,
@@ -328,6 +347,14 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
                 ),
                 keyboardType: TextInputType.number,
               ),
+              TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Search (string)',
+                  hintText: 'e.g. GM!',
+                ),
+                keyboardType: TextInputType.text,
+              ),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: _isDbOpen ? _runFilter : null,
@@ -335,30 +362,34 @@ class _NostrDbHomePageState extends State<NostrDbHomePage> {
               ),
 
               const SizedBox(height: 8),
-              Text(_filterResults,
-                  style: const TextStyle(fontStyle: FontStyle.italic)),
+              Text(
+                _filterResults,
+                style: const TextStyle(fontStyle: FontStyle.italic),
+              ),
               const SizedBox(height: 8),
 
               // Show query results:
-              if (_queryResults.isNotEmpty)
-                ...[
-                  const Text('Results:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Container(
-                    constraints: const BoxConstraints(maxHeight: 400),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _queryResults.length,
-                      itemBuilder: (ctx, i) {
-                        final item = _queryResults[i];
-                        // Suppose item has 'id' and 'content'
-                        return ListTile(
-                          title: Text('${item['id']}'),
-                          subtitle: Text('${item['content'] ?? ''}'),
-                        );
-                      },
-                    ),
+              if (_queryResults.isNotEmpty) ...[
+                const Text(
+                  'Results:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 400),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _queryResults.length,
+                    itemBuilder: (ctx, i) {
+                      final item = _queryResults[i];
+                      // Suppose item has 'id' and 'content'
+                      return ListTile(
+                        title: Text('${item['id']}'),
+                        subtitle: Text('${item['content'] ?? ''}'),
+                      );
+                    },
                   ),
-                ],
+                ),
+              ],
             ],
           ),
         ),
